@@ -64,4 +64,4 @@ end
 gem "dotenv-rails", groups: [ :development, :test, :production]
 gem "devise", "~> 4.9"
 gem "rails-ujs"
-
+#check it
