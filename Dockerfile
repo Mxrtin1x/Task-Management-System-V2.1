@@ -33,7 +33,7 @@ RUN apt-get update -qq && \
 
 # Install application gems
 WORKDIR /rails
-COPY Gemfile Gemfile.lock ./  # This line remains to ensure dependencies
+#COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
