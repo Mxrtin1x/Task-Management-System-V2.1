@@ -1,7 +1,10 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+	GITHUB_REPO_URL: ${GITHUB_REPO_URL}
     container_name: my-app-container
     ports:
       - "7777:7777"  # or the port you want to use
