@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: my-app-container
+    ports:
+      - "7777:7777"  # or the port you want to use
+    env_file:
+      - .env  # Make sure this points to the correct .env file
+    volumes:
+      - .:/myapp  # Mount your local code to the container
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

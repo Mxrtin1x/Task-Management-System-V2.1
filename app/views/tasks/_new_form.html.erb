@@ -1,0 +1,61 @@
+<h1 class="text-center mb-4 text-dark">Create a New Task</h1>
+
+<div class="container">
+  <div class="card p-4 shadow-lg" style="max-width: 600px; margin: auto; background-color: #1c1c1c; color: white; border-radius: 12px; margin-bottom: 20px; background-color: rgba(0, 0, 0, 0.6);">
+    <%= form_with model: @task, local: true, class: "mb-3" do |f| %>
+      <!-- Title Field -->
+      <div class="mb-3">
+        <%= f.text_field :title, class: "form-control form-control-lg", placeholder: "Task Title", style: "background-color: #f8f9fa; color: black; border-radius: 8px;" %>
+      </div>
+
+      <!-- Description Field -->
+      <div class="mb-3">
+        <%= f.text_area :description, class: "form-control form-control-lg", placeholder: "Task Description", style: "background-color: #f8f9fa; color: black; border-radius: 8px;" %>
+      </div>
+
+      <!-- Due Date Field -->
+      <div class="mb-3">
+        <!-- <%= f.date_field :due_date, class: "form-control form-control-lg", placeholder: "mm/dd/yyyy", style: "background-color: #f8f9fa; color: black; border-radius: 8px;" %> -->
+        <%= f.date_field :due_date, class: "form-control form-control-lg", min: Date.today.to_s, placeholder: "mm/dd/yyyy", style: "background-color: #f8f9fa; color: black; border-radius: 8px;" %>
+
+      </div>
+
+      <!-- Priority Field -->
+      <div class="mb-3">
+        <%= f.select :priority, ['Low', 'Medium', 'High'], {}, class: "form-control form-control-lg", style: "background-color: #f8f9fa; color: black; border-radius: 8px;" %>
+      </div>
+
+      <!-- Status Field -->
+      <div class="mb-3">
+        
+        <%= f.select :status, options_for_select([['Pending', 'Pending']]), {}, class: 'form-control form-control-lg', disabled: true %>
+
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-grid mb-3">
+        <%= f.submit "Create Task", class: "btn btn-primary btn-lg btn-block" %>
+      </div>
+
+      <!-- Back Button -->
+      <div class="text-center">
+        <%= link_to "Back to Tasks", tasks_path, class: "btn btn-light btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<style>
+/* Button hover effects */
+.btn:hover {
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+/* Input focus effect */
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+</style>

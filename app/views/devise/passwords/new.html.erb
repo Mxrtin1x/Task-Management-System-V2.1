@@ -1,0 +1,27 @@
+<div class="auth-page" style="background-color: #fff; background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; padding-left: 10px; padding-right: 10px;">
+  <div class="card p-4 shadow-lg" style="width: 480px; background-color: rgba(0, 0, 0, 0.7); color: white; border-radius: 12px;">
+    <div class="text-center mb-3">
+      <img src="<%= asset_path('logo.png') %>" alt="logo" class="mb-3" style="width: 100px; height: auto;">
+      <h3 class="fw-bold">Forgot your password?</h3>
+    </div>
+
+    <!-- Show error messages -->
+    <% if flash[:error] %>
+      <div class="alert alert-danger"><%= flash[:error] %></div>
+    <% end %>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <div class="mb-3">
+        <%= f.email_field :email, autofocus: true, class: "form-control form-control-lg", placeholder: "Enter your email address", style: "background-color: #ffffff; color: black;" %>
+      </div>
+
+      <div class="d-grid">
+        <%= f.submit "Send me reset password instructions", class: "btn btn-light btn-lg" %>
+      </div>
+    <% end %>
+
+    <div class="text-center mt-3">
+      <%= link_to "Back to Login", new_user_session_path, class: "btn btn-light btn-sm" %>
+    </div>
+  </div>
+</div>

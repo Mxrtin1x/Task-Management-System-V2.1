@@ -1,0 +1,10 @@
+<h1>Welcome to Task Manager V2</h1>
+
+<% if user_signed_in? %>
+  <p>You are already logged in. Redirecting to your dashboard...</p>
+  <script>
+    window.location = "<%= tasks_path %>";
+  </script>
+<% else %>
+  <p>Welcome! Please log in or sign up to start managing your tasks.</p>
+<% end %>

@@ -1,0 +1,212 @@
+<h1>Your Tasks</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <%= link_to 'New Task', new_task_path, class: 'btn btn-primary' %>
+
+  <!-- Priority Filter Group -->
+  <div class="priority-filter-group">
+    <span>Choose Priority:</span>
+    <form method="get" action="<%= tasks_path %>" id="priority-filter-form">
+      <label class="me-2">
+        <input type="checkbox" name="priority[]" value="Low" class="priority-checkbox" <%= 'checked' if params[:priority]&.include?('Low') %>> Low
+      </label>
+      <label class="me-2">
+        <input type="checkbox" name="priority[]" value="Medium" class="priority-checkbox" <%= 'checked' if params[:priority]&.include?('Medium') %>> Medium
+      </label>
+      <label>
+        <input type="checkbox" name="priority[]" value="High" class="priority-checkbox" <%= 'checked' if params[:priority]&.include?('High') %>> High
+      </label>
+    </form>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="col-md-12 col-12 col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @tasks.each do |task| %>
+                <tr>
+                  <td><%= task.title %></td>
+                  <td><%= task.description %></td>
+                  <td><%= task.due_date %></td>
+                  <td><%= task.priority %></td>
+                  <td><%= task.status %></td>
+                  <td>
+                    <!-- Show Button (Trigger Modal) -->
+                    <button type="button" class="btn btn-info btn-action mr-1" data-bs-toggle="modal" data-bs-target="#taskModal<%= task.id %>" title="Show">
+                      <i class="fas fa-eye"></i>
+                    </button>
+
+                    <!-- Edit Button -->
+                    <%= link_to edit_task_path(task), class: 'btn btn-primary btn-action mr-1', title: 'Edit' do %>
+                      <i class="fas fa-pencil-alt"></i>
+                    <% end %>
+
+                    <!-- Delete Button -->
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-action"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteModal<%= task.id %>"
+                      title="Delete"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Task Modal (Pop-Up) -->
+                <div class="modal fade" id="taskModal<%= task.id %>" tabindex="-1" aria-labelledby="taskModalLabel<%= task.id %>" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="taskModalLabel<%= task.id %>">Task Details: <%= task.title %></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p><strong>Description:</strong> <%= task.description %></p>
+                        <p><strong>Due Date:</strong> <%= task.due_date %></p>
+                        <p><strong>Priority:</strong> <%= task.priority %></p>
+                        <p><strong>Status:</strong> <%= task.status %></p>
+                      </div>
+                      <div class="modal-footer">
+                        <!-- Edit Button inside Modal -->
+                        <%= link_to "Edit Task", edit_task_path(task), class: 'btn btn-primary' %>
+                        <!-- Close Button inside Modal -->
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal<%= task.id %>" tabindex="-1" aria-labelledby="deleteModalLabel<%= task.id %>" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title" id="deleteModalLabel<%= task.id %>">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to delete the task "<strong><%= task.title %></strong>"?
+                      </div>
+                      <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <%= link_to task_path(task), method: :delete, class: 'btn btn-danger', data: { turbo: false } do %>
+                          Yes, Delete
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('.priority-checkbox');
+    const form = document.getElementById('priority-filter-form');
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', function () {
+        const selected = Array.from(checkboxes).filter((cb) => cb.checked);
+
+        if (selected.length > 2) {
+          // Create and show the message
+          const message = document.createElement('div');
+          message.className = 'alert-message';
+          message.innerText = 'You can select a maximum of 2 priorities.';
+          document.body.appendChild(message);
+
+          // Add class to make it appear
+          setTimeout(() => {
+            message.classList.add('show');
+          }, 10); // Delay to trigger the CSS transition
+
+          // Add a class to trigger the fade-out effect after 3 seconds
+          setTimeout(() => {
+            message.classList.add('fade-out');
+          }, 3000);
+
+          // Automatically remove the message after the fade-out
+          setTimeout(() => {
+            message.remove();
+          }, 4000); // Wait for fade-out to complete
+
+          this.checked = false; // Uncheck the last selected checkbox
+        } else {
+          form.submit(); // Automatically submit the form on valid change
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Style for the priority filter group */
+  .priority-filter-group {
+    border: 2px solid #0D6EFD;  /* Blue border with specified color */
+    padding: 10px;  /* Add some space inside the box */
+    border-radius: 5px;  /* Optional: rounds the corners */
+    display: flex;  /* Ensures the items are displayed in a row */
+    align-items: center;  /* Align items vertically */
+  }
+
+  .priority-filter-group span {
+    margin-right: 10px; /* Add space between the text and checkboxes */
+  }
+
+  /* Style for the alert message */
+  .alert-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0; /* Initially invisible */
+    transform: translateY(10px); /* Start below the screen */
+    transition: opacity 1s ease, transform 1s ease; /* Smooth fade-in and slide-up */
+  }
+
+  /* This will be added when the message needs to appear */
+  .alert-message.show {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Slide up to its original position */
+  }
+
+  /* This will be added when the message needs to disappear */
+  .alert-message.fade-out {
+    opacity: 0; /* Fade out */
+    transform: translateY(20px); /* Slide down out of view */
+  }
+
+  /* Add margin-right to the New Task button to create space between the button and the priority filter */
+  .d-flex .btn-primary {
+    margin-right: 10px;  /* Adjust this value as needed */
+  }
+</style>
